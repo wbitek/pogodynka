@@ -94,4 +94,7 @@ class Measurement
 
         return $this;
     }
+    public function __toString(){
+        return this->getLocation();
+    }
 }

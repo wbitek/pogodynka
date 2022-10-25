@@ -1,0 +1,18 @@
+App\Entity\Measurement:
+     properties:
+        date:
+            - Range:
+                min: now
+                max: +365 days
+        temperature:
+            - Range:
+                min: -999
+                max: 999
+        humidity:
+            - Range:
+                min: 0
+                max: 999
+        wind: 
+            - Range:
+                min: 0
+                max: 999
