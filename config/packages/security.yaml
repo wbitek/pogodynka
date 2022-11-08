@@ -5,7 +5,12 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        users_in_memory: 
+            memory:
+                users:
+                    # cartographer: { password: '$2y$13$RD7ZVzhrnvCF813moNsgUOHL6/YTI/EXkwr2ea8A57l.ElAtddirK', roles: ['ROLE_MEASUREMENT_INDEX', 'ROLE_MEASUREMENT_NEW', 'ROLE_MEASUREMENT_EDIT', 'ROLE_MEASUREMENT_DELETE', 'ROLE_MEASUREMENT_SHOW', 'ROLE_LOCATION_INDEX', 'ROLE_LOCATION_NEW', 'ROLE_LOCATION_EDIT', 'ROLE_LOCATION_DELETE', 'ROLE_LOCATION_SHOW'] }
+                    cartographer: { password: '$2y$13$0G4BTGYRMH.w6mp09ip1eOxtc025UpYX/8tQRWbwF6NyS8RK6xeM.', roles: ['ROLE_CARTOGRAPHER'] }
+                    measurer: { password: '$2y$13$2nSr12nPMw//QIte40HkJOi7boaIXEmYuEkqaMJbX0YPSukU03sCy', roles: ['ROLE_MEASURER'] }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -13,6 +18,11 @@ security:
         main:
             lazy: true
             provider: users_in_memory
+            form_login: 
+                login_path: app_login
+                check_path: app_login
+            logout:
+                path: app_logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -24,8 +34,13 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-
+        #- { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/location, roles: ['ROLE_LOCATION_INDEX', 'ROLE_LOCATION_NEW', 'ROLE_LOCATION_EDIT', 'ROLE_LOCATION_DELETE', 'ROLE_LOCATION_SHOW']}
+        - { path: ^/measurement, roles: ['ROLE_MEASUREMENT_INDEX', 'ROLE_MEASUREMENT_NEW', 'ROLE_MEASUREMENT_EDIT', 'ROLE_MEASUREMENT_DELETE', 'ROLE_MEASUREMENT_SHOW'] }
+    role_hierarchy:
+        ROLE_ADMIN: ['ROLE_LOCATION_INDEX', 'ROLE_LOCATION_NEW', 'ROLE_LOCATION_EDIT', 'ROLE_LOCATION_DELETE', 'ROLE_LOCATION_SHOW', 'ROLE_MEASUREMENT_INDEX', 'ROLE_MEASUREMENT_NEW', 'ROLE_MEASUREMENT_EDIT', 'ROLE_MEASUREMENT_DELETE', 'ROLE_MEASUREMENT_SHOW']
+        ROLE_CARTOGRAPHER: ['ROLE_LOCATION_INDEX', 'ROLE_LOCATION_NEW', 'ROLE_LOCATION_EDIT', 'ROLE_LOCATION_DELETE', 'ROLE_LOCATION_SHOW']
+        ROLE_MEASURER: ['ROLE_MEASUREMENT_INDEX', 'ROLE_MEASUREMENT_NEW', 'ROLE_MEASUREMENT_EDIT', 'ROLE_MEASUREMENT_DELETE', 'ROLE_MEASUREMENT_SHOW']
 when@test:
     security:
         password_hashers:
